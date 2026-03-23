@@ -27,7 +27,7 @@ export async function POST(req: NextRequest) {
         cta_text: cta_text.trim(),
         cta_url: cta_url?.trim() || null,
       })
-      .select()
+      .select('slug')
       .single()
 
     if (error) {

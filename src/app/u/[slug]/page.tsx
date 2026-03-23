@@ -5,9 +5,7 @@ import { Metadata } from 'next'
 export const dynamic = 'force-dynamic'
 
 interface UpsellPageProps {
-  params: {
-    slug: string
-  }
+  params: Promise<{ slug: string }>
 }
 
 async function getUpsell(slug: string) {
@@ -38,7 +36,8 @@ function extractYouTubeId(url: string): string | null {
 }
 
 export async function generateMetadata({ params }: UpsellPageProps): Promise<Metadata> {
-  const upsell = await getUpsell(params.slug)
+  const { slug } = await params
+  const upsell = await getUpsell(slug)
   
   if (!upsell) {
     return {
@@ -53,7 +52,8 @@ export async function generateMetadata({ params }: UpsellPageProps): Promise<Met
 }
 
 export default async function UpsellPage({ params }: UpsellPageProps) {
-  const upsell = await getUpsell(params.slug)
+  const { slug } = await params
+  const upsell = await getUpsell(slug)
   
   if (!upsell) {
     notFound()
