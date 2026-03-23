@@ -2,6 +2,8 @@ import { supabase, Upsell } from '@/lib/supabase'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
 
+export const dynamic = 'force-dynamic'
+
 function getYouTubeId(url: string): string | null {
   try {
     const u = new URL(url)
