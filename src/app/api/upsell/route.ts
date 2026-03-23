@@ -15,26 +15,31 @@ export async function POST(req: NextRequest) {
 
     const slug = nanoid()
 
+    const insertPayload = {
+      slug,
+      product_name: product_name.trim(),
+      price: price.trim(),
+      headline: headline.trim(),
+      description: description.trim(),
+      video_url: video_url?.trim() || null,
+      cta_text: cta_text.trim(),
+      cta_url: cta_url?.trim() || null,
+    }
+
+    console.log('🔍 Inserting upsell:', insertPayload)
+
     const { data, error } = await supabase
       .from('upsells')
-      .insert({
-        slug,
-        product_name: product_name.trim(),
-        price: price.trim(),
-        headline: headline.trim(),
-        description: description.trim(),
-        video_url: video_url?.trim() || null,
-        cta_text: cta_text.trim(),
-        cta_url: cta_url?.trim() || null,
-      })
-      .select('slug')
+      .insert(insertPayload)
+      .select('*')
       .single()
 
     if (error) {
-      console.error('Supabase error:', error)
+      console.error('❌ Supabase error:', error)
       return NextResponse.json({ error: 'Failed to create upsell page' }, { status: 500 })
     }
 
+    console.log('✅ Upsell created:', data)
     return NextResponse.json({ slug: data.slug }, { status: 201 })
   } catch (err) {
     console.error(err)
