@@ -55,11 +55,19 @@ export default async function UpsellPage({ params }: UpsellPageProps) {
   const { slug } = await params
   const upsell = await getUpsell(slug)
   
+  // DEBUG: Log what we got from database
+  console.log('Upsell data:', upsell)
+  console.log('CTA URL:', upsell?.cta_url)
+  console.log('CTA Text:', upsell?.cta_text)
+  
   if (!upsell) {
     notFound()
   }
   
   const videoId = upsell.video_url ? extractYouTubeId(upsell.video_url) : null
+  const checkoutUrl = upsell.cta_url && upsell.cta_url.trim() !== '' 
+    ? upsell.cta_url 
+    : '#'
   
   return (
     <main className="min-h-screen bg-white">
@@ -98,10 +106,19 @@ export default async function UpsellPage({ params }: UpsellPageProps) {
         
         <div className="text-center">
           <a
-            href={upsell.cta_url}
-            className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-colors"
+            href={checkoutUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              if (!upsell.cta_url || upsell.cta_url.trim() === '') {
+                e.preventDefault()
+                alert('Checkout link not configured')
+              }
+              console.log('Clicking URL:', upsell.cta_url)
+            }}
+            className="inline-flex items-center justify-center rounded-md bg-emerald-600 px-8 py-4 text-lg font-semibold text-white shadow-sm hover:bg-emerald-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-emerald-600 transition-colors cursor-pointer"
           >
-            {upsell.cta_text}
+            {upsell.cta_text || "Yes, Add This Now"}
           </a>
         </div>
       </div>
