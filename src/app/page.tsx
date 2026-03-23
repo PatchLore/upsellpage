@@ -43,6 +43,7 @@ export default function HomePage() {
     if (!form.headline.trim()) e.headline = 'Required'
     if (!form.description.trim()) e.description = 'Required'
     if (!form.cta_text.trim()) e.cta_text = 'Required'
+    if (!form.cta_url.trim()) e.cta_url = 'Required'
     if (form.video_url && !isValidYouTubeUrl(form.video_url)) {
       e.video_url = 'Must be a valid YouTube URL'
     }
@@ -174,13 +175,14 @@ export default function HomePage() {
                 className={inputClass(!!errors.cta_text)}
               />
             </Field>
-            <Field label="Button URL" hint="Where should the button go?">
+            <Field label="Button URL" error={errors.cta_url} required hint="Your checkout or destination link">
               <input
                 type="url"
-                placeholder="https://your-checkout-link.com"
+                placeholder="https://whop.com/checkout/YOUR_PRODUCT"
                 value={form.cta_url}
                 onChange={e => set('cta_url', e.target.value)}
-                className={inputClass(false)}
+                className={inputClass(!!errors.cta_url)}
+                required
               />
             </Field>
           </div>
